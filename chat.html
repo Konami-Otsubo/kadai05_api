@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>畑チャットアプリ</title>
+<link rel="stylesheet" href="css/style2.css">
+</head>
+<body>
+
+    <!-- コンテンツ表示画面 -->
+<div id="container">
+    <h1>畑チャットアプリ</h1>
+    <div id="input-section">
+        <div id="photo-section">
+            <input type="file" id="photo-input" accept="image/*">
+            <img id="selected-photo" alt="選択された写真" style="display:none;">
+        </div>
+        <div id="details-section">
+           <!-- 作業日と天気を横並びに -->
+           <div class="input-group">
+            <label for="date-time">作業日</label>
+            <input type="date" id="date-time">
+            <label for="weather">天気</label>
+            <input type="text" id="weather" placeholder="天気を入力">
+        </div>
+        <!-- 野菜 -->
+        <div class="input-group-inline">
+            <label for="veg-name">野菜</label>
+            <input type="text" id="veg-name" placeholder="野菜の名前を入力">
+        </div>
+        <!-- 作業内容 -->
+        <div class="input-group-inline">
+            <label for="text">作業内容</label>
+            <textarea id="text" cols="30" rows="3" placeholder="作業内容を入力"></textarea>
+        </div>
+        <!-- 保存ボタン -->
+        <div id="save-button-section">
+            <button id="save">保存</button>
+        </div>
+        <!-- コメント -->
+        <div class="input-group-inline">
+            <label for="comment">コメント</label>
+            <textarea id="comment" cols="30" rows="2" placeholder="コメントを入力"></textarea>
+        </div>
+        <!-- 送信と消去ボタン -->
+        <div id="button-section">
+            <button id="send">送信</button>
+            <button id="clear-output">消去</button>
+        </div>
+    </div>
+</div>
+<div id="output"></div>
+</div>
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Firebaseの設定と初期化 -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getDatabase, ref, push, set, onChildAdded } 
+    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } 
+    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDatFSpUPihijCUKk8SY6QfQyORkw4XHVA",
+    authDomain: "weather-944eb.firebaseapp.com",
+    databaseURL: "https://weather-944eb-default-rtdb.firebaseio.com",
+    projectId: "weather-944eb",
+    storageBucket: "weather-944eb.appspot.com",
+    messagingSenderId: "1016168856019",
+    appId: "1:1016168856019:web:4de7447813df6b668c1726"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const dbRef = ref(db, "chat/memo");
+    const storage = getStorage(app);
+
+        // 写真のプレビュー
+    $("#photo-input").on("change", function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $("#selected-photo").attr("src", e.target.result).show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $("#selected-photo").hide();
+        }
+    });
+
+    // データ保存
+    $("#save").on("click", async function() {
+        const dateTime = $("#date-time").val();
+        const uname = $("#veg-name").val();
+        const text = $("#text").val();
+        const file = $("#photo-input")[0].files[0];
+
+        if (uname && text) {  // 野菜と作業内容が入力されている場合のみ保存
+            let msg;
+            if (file) {
+                const storageReference = storageRef(storage, 'images/' + file.name);
+                await uploadBytes(storageReference, file);
+                const photoURL = await getDownloadURL(storageReference);
+
+                msg = {
+                    dateTime: dateTime,
+                    uname: uname,
+                    text: text,
+                    photoURL: photoURL
+                };
+            } else {
+                msg = {
+                    dateTime: dateTime,
+                    uname: uname,
+                    text: text
+                };
+            }
+            const newPostRef = push(dbRef);
+            set(newPostRef, msg);
+        } else {
+            alert("野菜名と作業内容を入力してください");
+        }
+    });
+
+    // コメント送信
+    $("#send").on("click", function() {
+        const comment = $("#comment").val();
+        const msg = {
+            comment: comment
+        };
+
+        const newPostRef = push(dbRef);
+        set(newPostRef, msg);
+        $("#comment").val(""); // コメント送信後に入力欄をクリア
+    });
+
+    // コメントのリアルタイム取得
+    onChildAdded(dbRef, function(data) {
+        const msg = data.val();
+        const key = data.key;
+
+        if (msg.comment) {
+            let h = `<p>${msg.comment}</p>`; // コメントのみ表示
+            $("#output").append(h);
+        }
+    });
+        
+
+    // 出力内容を消去する機能
+    $("#clear-output").on("click", function() {
+        $("#output").empty();
+    });
+
+</script>
+
+</body>
+</html>

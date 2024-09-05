@@ -1,0 +1,131 @@
+/* 全体のスタイル */
+body {
+    background-image: url('../img/background-image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+}
+
+/* コンテナ */
+#container {
+    max-width: 900px; /* コンテナの幅を狭く調整 */
+    margin: auto;
+    padding: 0 10px; /* 左右の余白を狭く */
+}
+
+/* ヘッダー */
+h1 {
+    text-align: center;
+    font-size: 2em;
+    color: #333;
+    background-color: rgb(243, 215, 56);
+    padding: 10px 20px;
+    border-radius: 50px;
+    width: max-content;
+    margin: 0 auto 10px auto;
+}
+
+/* メインセクション */
+#main-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* 天気予報表示エリア */
+#weather-output {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 5px; /* 天気予報エリアの左右の余白を狭く */
+}
+
+/* 天気予報ボックス */
+.weather-forecast {
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 5px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    height: 120px;
+}
+
+/* 左側の天気情報 */
+.forecast-left {
+    flex: 1;
+    text-align: center;
+    padding-left: 5px; /* 左側余白を狭く */
+}
+
+.forecast-left img {
+    width: 60px;
+    height: 60px;
+}
+
+/* 右側の作業計画 */
+.forecast-right {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-group label {
+    width: 50px; /* ラベルを短く */
+}
+
+.input-group input, .input-group textarea {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.input-group textarea {
+    resize: none;
+    height: 35px;
+}
+
+/* 保存ボタン */
+.save-plan {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
+
+.save-plan:hover {
+    background-color: #218838;
+}
+
+/* 記録ボタン */
+.record-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
+
+.record-button:hover {
+    background-color: #0056b3;
+}
