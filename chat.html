@@ -62,16 +62,6 @@
     import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } 
     from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDatFSpUPihijCUKk8SY6QfQyORkw4XHVA",
-    authDomain: "weather-944eb.firebaseapp.com",
-    databaseURL: "https://weather-944eb-default-rtdb.firebaseio.com",
-    projectId: "weather-944eb",
-    storageBucket: "weather-944eb.appspot.com",
-    messagingSenderId: "1016168856019",
-    appId: "1:1016168856019:web:4de7447813df6b668c1726"
-    };
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const dbRef = ref(db, "chat/memo");
